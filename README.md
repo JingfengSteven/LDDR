@@ -1,21 +1,21 @@
-# Qwen3-VL Dynamic-Resolution Evaluation
+# Qwen2.5-VL Dynamic-Resolution Evaluation
 
-This repository is a cleaned and minimalized `lmms-eval` fork for running our dynamic-resolution video evaluation method on Qwen3-VL.
+This repository is a cleaned and minimalized `lmms-eval` fork for running our dynamic-resolution video evaluation method on Qwen2.5-VL.
 
 The repository keeps three core pieces:
 - the `lmms-eval` evaluation framework
-- our Qwen3-VL method implementation
+- our Qwen2.5-VL method implementation
 - a runnable example script for dynamic-resolution evaluation
 
 ## What This Repo Runs
 
 Our method is implemented in:
-- `lmms_eval/models/chat/qwen3_vl_chat_wo_ours_v4.py`
+- `lmms_eval/models/chat/qwen2_5_vl_chat_wo_ours_v4.py`
 
 It is built on top of:
-- `lmms_eval/models/simple/qwen3_vl.py`
+- `lmms_eval/models/simple/qwen2_5_vl.py`
 
-The dynamic-resolution path is the default path in the current implementation of `qwen3_vl_chat_wo_ours_v4`.
+The dynamic-resolution path is the default path in the current implementation of `qwen2_5_vl_chat_wo_ours_v4`.
 
 ## Supported Benchmarks
 
@@ -51,16 +51,16 @@ pip install -e .
 
 ## Required Models and Assets
 
-### 1. Qwen3-VL checkpoint
+### 1. Qwen2.5-VL checkpoint
 
 Set `PRETRAINED_PATH` to either:
 - a local checkpoint directory, or
-- a Hugging Face model id such as `Qwen/Qwen3-VL-4B-Instruct`
+- a Hugging Face model id such as `Qwen/Qwen2.5-VL-3B-Instruct`
 
 Example:
 
 ```bash
-export PRETRAINED_PATH=/path/to/Qwen3-VL-4B-Instruct
+export PRETRAINED_PATH=/path/to/Qwen2.5-VL-3B-Instruct
 ```
 
 ### 2. CLIP encoder
@@ -129,38 +129,38 @@ So before running `lvbench`, make sure the local data exists at that path, or ed
 The main example script is:
 
 ```bash
-bash examples/models/qwen3vl.sh
+bash examples/models/qwen25vl.sh
 ```
 
 This script runs:
-- model: `qwen3_vl_chat_wo_ours_v4`
+- model: `qwen2_5_vl_chat_wo_ours_v4`
 - task: `videomme` by default
 - dynamic-resolution frame selection
 
 ### Minimal example
 
 ```bash
-export PRETRAINED_PATH=/path/to/Qwen3-VL-4B-Instruct
+export PRETRAINED_PATH=/path/to/Qwen2.5-VL-3B-Instruct
 export TASK_NAME=videomme
 export OUTPUT_PATH=./outputs/videomme
 
-bash examples/models/qwen3vl.sh
+bash examples/models/qwen25vl.sh
 ```
 
 ### Run another benchmark
 
 ```bash
-export PRETRAINED_PATH=/path/to/Qwen3-VL-4B-Instruct
+export PRETRAINED_PATH=/path/to/Qwen2.5-VL-3B-Instruct
 export TASK_NAME=longvideobench_val_v
 export OUTPUT_PATH=./outputs/longvideobench_val_v
 
-bash examples/models/qwen3vl.sh
+bash examples/models/qwen25vl.sh
 ```
 
 ### Run with custom frame and token budget
 
 ```bash
-export PRETRAINED_PATH=/path/to/Qwen3-VL-4B-Instruct
+export PRETRAINED_PATH=/path/to/Qwen2.5-VL-3B-Instruct
 export TASK_NAME=mlvu_dev
 export MAX_NUM_FRAMES=8
 export TARGET_TOKEN_PER_FRAME=1024
@@ -168,7 +168,7 @@ export MIN_TOKEN_PER_FRAME=256
 export MAX_TOKEN_PER_FRAME=1024
 export OUTPUT_PATH=./outputs/mlvu_dev
 
-bash examples/models/qwen3vl.sh
+bash examples/models/qwen25vl.sh
 ```
 
 ## Important Runtime Arguments
@@ -176,7 +176,7 @@ bash examples/models/qwen3vl.sh
 The example script exposes the following environment variables:
 
 - `TASK_NAME`: benchmark name
-- `PRETRAINED_PATH`: Qwen3-VL model path or HF model id
+- `PRETRAINED_PATH`: Qwen2.5-VL model path or HF model id
 - `OUTPUT_PATH`: output directory
 - `NUM_PROCESSES`: number of processes for `accelerate`
 - `BATCH_SIZE`: eval batch size
@@ -191,7 +191,7 @@ Example:
 
 ```bash
 export TASK_NAME=videomme
-export PRETRAINED_PATH=/path/to/Qwen3-VL-4B-Instruct
+export PRETRAINED_PATH=/path/to/Qwen2.5-VL-3B-Instruct
 export NUM_PROCESSES=1
 export BATCH_SIZE=1
 export MAX_NUM_FRAMES=8
@@ -201,20 +201,20 @@ export MAX_TOKEN_PER_FRAME=1024
 export USE_LONGCLIP=True
 export OUTPUT_PATH=./outputs/videomme
 
-bash examples/models/qwen3vl.sh
+bash examples/models/qwen25vl.sh
 ```
 
 ## Dynamic-Resolution Notes
 
 Our dynamic-resolution path is implemented inside:
-- `lmms_eval/models/chat/qwen3_vl_chat_wo_ours_v4.py`
+- `lmms_eval/models/chat/qwen2_5_vl_chat_wo_ours_v4.py`
 
 The high-level flow is:
 1. Encode frame-text relevance with CLIP or LongCLIP.
 2. Select frames with DPP-style pruning.
 3. Allocate different token budgets to different selected frames.
 4. Convert token budgets into per-frame resized height and width.
-5. Feed resized images into Qwen3-VL through `qwen_vl_utils`.
+5. Feed resized images into Qwen2.5-VL through `qwen_vl_utils`.
 
 In other words, different selected frames can receive different effective resolutions under the same overall visual budget.
 
@@ -226,7 +226,7 @@ Optional overrides:
 export CLIP_MODEL_PATH=/path/to/clip-ViT-L-14
 export LONGCLIP_DIR=/path/to/Longclip
 export LONG_CLIP_MODEL_PATH=/path/to/Longclip/checkpoints/longclip-L.pt
-export LMMS_CLIP_CACHE_DIR=./data/cache/clip-cache
+export LMMS_EVAL_CLIP_CACHE=./data/cache/clip-cache
 export HF_TOKEN=<your_hf_token_if_needed>
 ```
 
@@ -240,9 +240,9 @@ Typical outputs include:
 
 ## Main Files
 
-- `examples/models/qwen3vl.sh`: example entry script
-- `lmms_eval/models/chat/qwen3_vl_chat_wo_ours_v4.py`: our Qwen3-VL dynamic-resolution method
-- `lmms_eval/models/simple/qwen3_vl.py`: Qwen3-VL base wrapper
+- `examples/models/qwen25vl.sh`: example entry script
+- `lmms_eval/models/chat/qwen2_5_vl_chat_wo_ours_v4.py`: our Qwen2.5-VL dynamic-resolution method
+- `lmms_eval/models/simple/qwen2_5_vl.py`: Qwen2.5-VL base wrapper
 - `lmms_eval/tasks/*`: benchmark configs
 
 ## Common Issues
@@ -281,4 +281,4 @@ Do not hard-code tokens into scripts.
 
 ## Citation
 
-If you use this repository, please cite the corresponding project or paper for the dynamic-resolution Qwen3-VL evaluation method.
+If you use this repository, please cite the corresponding project or paper for the dynamic-resolution Qwen2.5-VL evaluation method.
