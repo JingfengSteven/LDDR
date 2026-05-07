@@ -179,10 +179,17 @@ def extract_question(task_name: str, message) -> str:
             break
 
     lower_task_name = task_name.lower()
-    if "videomme" in lower_task_name or "longvideobench" in lower_task_name:
+    if "videomme" in lower_task_name:
         prompt = (
             "Select the best answer to the following multiple-choice question based on "
             "the video and the subtitles. Respond with only the letter (A, B, C, or D) "
+            "of the correct option.\n"
+        )
+        question = question.replace(prompt, "").split("\nA.")[0]
+    elif "longvideobench" in lower_task_name:
+        prompt = (
+            "Select the best answer to the following multiple-choice question based on "
+            "the video and the subtitles. Respond with only the letter (A, B, C, D, or E) "
             "of the correct option.\n"
         )
         question = question.replace(prompt, "").split("\nA.")[0]
