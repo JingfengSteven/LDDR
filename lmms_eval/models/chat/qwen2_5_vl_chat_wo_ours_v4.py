@@ -29,7 +29,7 @@ except ImportError:
     eval_logger.warning("Failed to import qwen_vl_utils; Please install it via `pip install qwen-vl-utils`")
 
 
-def cdpruner_dpp_dynamic_resolution(
+def dpp_dynamic_resolution(
     frame_features: torch.Tensor,
     frame_embeds: torch.Tensor,
     text_embed: torch.Tensor,
@@ -326,7 +326,7 @@ class Qwen2_5_VL_Chat_WO_Ours_v4(Qwen2_5_VLSimple):
                     selected_images.append([])
                     continue
 
-                selected_idx, selected_resolution = cdpruner_dpp_dynamic_resolution(
+                selected_idx, selected_resolution = dpp_dynamic_resolution(
                     frame_features=full_feats.to(self.model.device),
                     frame_embeds=full_feats.to(self.model.device),
                     text_embed=text_embed.to(self.model.device),
