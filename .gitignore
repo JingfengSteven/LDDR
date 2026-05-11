@@ -16,6 +16,8 @@ data/
 *.gif
 *.webm
 *.mov
+!assets/
+!assets/LDDR.png
 
 # 忽略 Python 缓存和安装包
 __pycache__/
