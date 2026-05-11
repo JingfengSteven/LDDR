@@ -1,6 +1,6 @@
 # Qwen2.5-VL Dynamic-Resolution Evaluation
 <p align="center">
-  <img src="./assets/LDDR" alt="Overview" width="800">
+  <img src="./assets/LDDR.png" alt="Overview" width="800">
 </p>
 
 This repository is a cleaned and minimalized `lmms-eval` fork for running our dynamic-resolution video evaluation method on Qwen2.5-VL.
