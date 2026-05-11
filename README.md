@@ -1,4 +1,4 @@
-# Qwen2.5-VL Dynamic-Resolution Evaluation
+# LDDR: Linear-DPP-Based Dynamic-Resolution Frame Sampling for Video MLLMs
 <p align="center">
   <img src="assets/LDDR.png" alt="Overview" width="800" />
 </p>
