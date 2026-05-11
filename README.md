@@ -20,15 +20,9 @@ The dynamic-resolution path is the default path in the current implementation of
 ## Supported Benchmarks
 
 This cleaned version is prepared for the following video benchmarks:
-- `videomme`
-- `mlvu_dev`
-- `lvbench`
 - `longvideobench_val_v`
 
 Relevant task configs are under:
-- `lmms_eval/tasks/videomme/`
-- `lmms_eval/tasks/mlvu/`
-- `lmms_eval/tasks/lvbench/`
 - `lmms_eval/tasks/longvideobench/`
 
 ## Installation
@@ -55,12 +49,12 @@ pip install -e .
 
 Set `PRETRAINED_PATH` to either:
 - a local checkpoint directory, or
-- a Hugging Face model id such as `Qwen/Qwen2.5-VL-3B-Instruct`
+- a Hugging Face model id such as `Qwen/Qwen2.5-VL-7B-Instruct`
 
 Example:
 
 ```bash
-export PRETRAINED_PATH=/path/to/Qwen2.5-VL-3B-Instruct
+export PRETRAINED_PATH=/path/to/Qwen2.5-VL-7B-Instruct
 ```
 
 ### 2. CLIP encoder
@@ -96,33 +90,10 @@ export LONG_CLIP_MODEL_PATH=/path/to/Longclip/checkpoints/longclip-L.pt
 
 ## Data Preparation
 
-### Video-MME and MLVU
-
-These tasks can use Hugging Face datasets and cache to:
-- `./data/cache/huggingface/videomme`
-- `./data/cache/huggingface/mlvu/videos`
-
 ### LongVideoBench
 
 This task caches to:
 - `./data/cache/huggingface/datasets/LongVideoBench`
-
-### LVBench
-
-`lvbench` is currently configured as a local dataset path:
-
-```bash
-./data/lvbench/data
-```
-
-and video cache:
-
-```bash
-./data/cache/huggingface/lvbench/videos
-```
-
-So before running `lvbench`, make sure the local data exists at that path, or edit:
-- `lmms_eval/tasks/lvbench/lvbench.yaml`
 
 ## Quick Start
 
@@ -190,8 +161,8 @@ The example script exposes the following environment variables:
 Example:
 
 ```bash
-export TASK_NAME=videomme
-export PRETRAINED_PATH=/path/to/Qwen2.5-VL-3B-Instruct
+export TASK_NAME=longvideobench_val_v
+export PRETRAINED_PATH=/path/to/Qwen2.5-VL-7B-Instruct
 export NUM_PROCESSES=1
 export BATCH_SIZE=1
 export MAX_NUM_FRAMES=8
@@ -199,7 +170,7 @@ export TARGET_TOKEN_PER_FRAME=1024
 export MIN_TOKEN_PER_FRAME=256
 export MAX_TOKEN_PER_FRAME=1024
 export USE_LONGCLIP=True
-export OUTPUT_PATH=./outputs/videomme
+export OUTPUT_PATH=./outputs/longvideobench_val_v
 
 bash examples/models/qwen25vl.sh
 ```

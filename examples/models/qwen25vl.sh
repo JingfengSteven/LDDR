@@ -12,11 +12,11 @@ export TMPDIR=/tmp
 export TMPDIR=/tmp/triton_cache
 source activate
 conda activate lmms-eval
-cd /usr/project/xtmp/jc923/EACL/lmms-eval/lmms_eval
+cd ./LDDR
 
 
 
-export TASK_NAME=videomme
+export TASK_NAME=longvideobench_val_v
 
 
 export MAX_NUM_FRAMES=8
@@ -25,13 +25,13 @@ export MIN_TOKEN_PER_FRAME=256
 export MAX_TOKEN_PER_FRAME=1024
 
 
-export PRETRAINED_PATH="/usr/project/xtmp/jc923/EACL/ckpt/qwen/Qwen/Qwen2.5-VL-7B-Instruct"
+export PRETRAINED_PATH=""
 export ATTN_IMPLEMENTATION="flash_attention_2"
 
 
-export BATCH_SIZE=4
+export BATCH_SIZE=1
 export NUM_PROCESSES=1
-export OUTPUT_PATH="/usr/project/xtmp/jc923/EACL/eval/${TASK_NAME}_${MAX_NUM_FRAMES}f"
+export OUTPUT_PATH="./eval/${TASK_NAME}_${MAX_NUM_FRAMES}f"
 export USE_LONG_CLIP=False
 
 

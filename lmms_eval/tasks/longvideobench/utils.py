@@ -125,20 +125,14 @@ def longvideobench_doc_to_text(doc, lmms_eval_specific_kwargs):
     post_prompt = lmms_eval_specific_kwargs["post_prompt"]
 
     if lmms_eval_specific_kwargs.get("insert_interleave_subtitles", False):
-        with open(Path(__file__).parent / "longvideobench_val_i.yaml", "r") as f:
-            raw_data = f.readlines()
-            safe_data = []
-            for i, line in enumerate(raw_data):
-                # remove function definition since yaml load cannot handle it
-                if "!function" not in line:
-                    safe_data.append(line)
-        cache_name = yaml.safe_load("".join(safe_data))["dataset_kwargs"]["cache_dir"]
-        subtitle_subdir_name = yaml.safe_load("".join(safe_data))["dataset_kwargs"].get("subtitle_subdir", "subtitles")
-        cache_dir = os.path.join(base_cache_dir, cache_name, subtitle_subdir_name)
+        config = _load_task_config("longvideobench_val_i.yaml")
+        cache_dir = _resolve_longvideobench_cache_dir(config["dataset_kwargs"]["cache_dir"])
+        subtitle_subdir_name = config["dataset_kwargs"].get("subtitle_subdir", "subtitles")
+        cache_dir = os.path.join(cache_dir, subtitle_subdir_name)
         with open(os.path.join(cache_dir, doc["subtitle_path"])) as f:
             subtitles = json.load(f)
 
-        max_num_frames = yaml.safe_load("".join(safe_data))["dataset_kwargs"].get("max_num_frames", 16)
+        max_num_frames = config["dataset_kwargs"].get("max_num_frames", 16)
 
         frame_timestamps = compute_frame_timestamps(doc["duration"], max_num_frames)
         interleaved_prefix = insert_subtitles_into_frames(frame_timestamps, subtitles, doc["starting_timestamp_for_subtitles"], doc["duration"])
@@ -149,19 +143,35 @@ def longvideobench_doc_to_text(doc, lmms_eval_specific_kwargs):
 
 hf_home = os.getenv("HF_HOME", "~/.cache/huggingface/")
 base_cache_dir = os.path.expanduser(hf_home)
+DEFAULT_LONGVIDEOBENCH_CACHE_DIR = "/usr/project/xtmp/jc923/cache_center/huggingface/datasets/LongVideoBench"
+
+
+def _load_task_config(config_name):
+    with open(Path(__file__).parent / config_name, "r") as f:
+        raw_data = f.readlines()
+        safe_data = []
+        for line in raw_data:
+            # Remove function definitions since yaml load cannot handle them.
+            if "!function" not in line:
+                safe_data.append(line)
+    return yaml.safe_load("".join(safe_data))
+
+
+def _resolve_longvideobench_cache_dir(cache_dir):
+    override_dir = os.getenv("LONGVIDEOBENCH_CACHE_DIR")
+    if override_dir:
+        return override_dir
+    if os.path.isabs(cache_dir):
+        return cache_dir
+    if cache_dir == "longvideobench":
+        return DEFAULT_LONGVIDEOBENCH_CACHE_DIR
+    return os.path.join(base_cache_dir, cache_dir)
 
 
 def longvideobench_doc_to_visual_v(doc):
-    with open(Path(__file__).parent / "longvideobench_val_v.yaml", "r") as f:
-        raw_data = f.readlines()
-        safe_data = []
-        for i, line in enumerate(raw_data):
-            # remove function definition since yaml load cannot handle it
-            if "!function" not in line:
-                safe_data.append(line)
-    cache_dir = yaml.safe_load("".join(safe_data))["dataset_kwargs"]["cache_dir"]
-    vid_subdir_name = yaml.safe_load("".join(safe_data))["dataset_kwargs"].get("video_subdir", "videos/")
-    # Use cache_dir directly as it's already an absolute path
+    config = _load_task_config("longvideobench_val_v.yaml")
+    cache_dir = _resolve_longvideobench_cache_dir(config["dataset_kwargs"]["cache_dir"])
+    vid_subdir_name = config["dataset_kwargs"].get("video_subdir", "videos/")
     video_dir = os.path.join(cache_dir, vid_subdir_name)
     video_path = doc["video_path"]
     video_path = os.path.join(video_dir, video_path)
@@ -169,19 +179,13 @@ def longvideobench_doc_to_visual_v(doc):
 
 
 def longvideobench_doc_to_visual_i(doc):
-    with open(Path(__file__).parent / "longvideobench_val_i.yaml", "r") as f:
-        raw_data = f.readlines()
-        safe_data = []
-        for i, line in enumerate(raw_data):
-            # remove function definition since yaml load cannot handle it
-            if "!function" not in line:
-                safe_data.append(line)
-    cache_name = yaml.safe_load("".join(safe_data))["dataset_kwargs"]["cache_dir"]
-    vid_subdir_name = yaml.safe_load("".join(safe_data))["dataset_kwargs"].get("video_subdir", "videos/")
-    cache_dir = os.path.join(base_cache_dir, cache_name, vid_subdir_name)
+    config = _load_task_config("longvideobench_val_i.yaml")
+    cache_dir = _resolve_longvideobench_cache_dir(config["dataset_kwargs"]["cache_dir"])
+    vid_subdir_name = config["dataset_kwargs"].get("video_subdir", "videos/")
+    cache_dir = os.path.join(cache_dir, vid_subdir_name)
     video_path = doc["video_path"]
     video_path = os.path.join(cache_dir, video_path)
-    max_num_frames = yaml.safe_load("".join(safe_data))["dataset_kwargs"].get("max_num_frames", 16)
+    max_num_frames = config["dataset_kwargs"].get("max_num_frames", 16)
     return load_video(video_path, doc["duration"], max_num_frames)
 
 

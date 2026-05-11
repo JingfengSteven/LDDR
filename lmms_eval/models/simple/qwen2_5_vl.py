@@ -34,23 +34,22 @@ except ImportError:
     eval_logger.warning("Failed to import qwen_vl_utils; Please install it via `pip install qwen-vl-utils`")
 
 
-# 增加 CLIP model for image encoding
+
 from sentence_transformers import SentenceTransformer, util
 from PIL import Image
 import os
 #CLIP_MODEL_PATH = "/path/to/your/workspace/EACL/ckpt/clip/AI-ModelScope/clip-vit-large-patch14"
 
-CLIP_MODEL_PATH = "/path/to/your/workspace/EACL/ckpt/clip2/sentence-transformers/clip-ViT-L-14"
+CLIP_MODEL_PATH = "/path/to/your/clip-ViT-L-14"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 SIGLIP_MODEL_PATH = "/path/to/your/workspace/EACL/ckpt/siglip"
 
 
-## =====================================================================
-# 增加long-clip的处理逻辑
-LONG_CLIP_MODEL_PATH = "/path/to/your/workspace/EACL/lmms-eval/lmms_eval/models/simple/Longclip/checkpoints/longclip-L.pt"
+
+LONG_CLIP_MODEL_PATH = "/path/to/your/Longclip/checkpoints/longclip-L.pt"
 
 import sys
-sys.path.append("/path/to/your/workspace/EACL/lmms-eval/lmms_eval/models/simple/Longclip")
+sys.path.append("/path/to/your/Longclip")
 from model import longclip
 ## =====================================================================
 

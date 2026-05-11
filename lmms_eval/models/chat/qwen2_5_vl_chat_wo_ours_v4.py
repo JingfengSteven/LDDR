@@ -370,13 +370,14 @@ class Qwen2_5_VL_Chat_WO_Ours_v4(Qwen2_5_VLSimple):
                 inputs = inputs.to("cuda")
             else:
                 inputs = inputs.to(self.device)
-
+            
             default_gen_kwargs = {
                 "max_new_tokens": 128,
                 "temperature": 0.0,
                 "top_p": None,
                 "num_beams": 1,
             }
+            print("we are here")
             current_gen_kwargs = {**default_gen_kwargs, **gen_kwargs}
             pad_token_id = self.tokenizer.pad_token_id
 
